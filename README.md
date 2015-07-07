@@ -5,6 +5,7 @@ Ansible-based etcd cluster deployment tool.
 
   * [etcd-conductor](#etcd-conductor)
     * [How to use](#how-to-use)
+    * [License](#license)
     * [Credits](#credits)
 
 
@@ -34,9 +35,11 @@ etcd-conductor is released under GNU General Public License version 2.
 ## Credits
 
 etcd-conductor development is currently located at the following URI:
+
     http://github.com/a2o/etcd-conductor/
 
 etcd-conductor was created and is maintained by:
+
     Bostjan Skufca <bostjan@a2o.si>
 
 List of contributors is available at the following locations:
