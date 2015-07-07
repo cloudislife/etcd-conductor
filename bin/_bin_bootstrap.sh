@@ -68,3 +68,16 @@ if [ -f $ETCDC_PARENT_ABSPATH/ansible.cfg ]; then
 else
     export ANSIBLE_CONFIG="$ETCDC_ABSPATH/ansible.cfg"
 fi
+
+
+
+### Initialisation: find inventory file
+#
+RES=`cat $ANSIBLE_CONFIG | grep '^inventory' -c`
+if [ "$RES" != "1" ]; then
+    _etcdc_fatalError "Unable to determine inventory file path"
+fi
+ETCDC_INVENTORY_FILE=`cat "$ANSIBLE_CONFIG" | grep '^inventory' | cut -d= -f2 | sed -e 's/#.*//' | sed -e 's/^[ ]*//' | sed -e 's/[ ]*$//'`
+if [ "$ETCDC_INVENTORY_FILE" == "" ]; then
+    _etcdc_fatalError "Unable to parse inventory file path"
+fi

@@ -1,0 +1,50 @@
+###
+### Steps to add new node as a member of the cluster
+###
+
+Step 1:
+
+    Configure new node variables in inventory file (hosts), but comment it out
+    with '#new ' prefix at the very beginning of line, like this:
+
+#new new-node.etcd.example.net   etcd_node_ip=X.X.X.X   etcd_node_name_fqdn=new-node.etcd.example.net   etcd_node_name_short=new-node
+
+
+
+Step 2:
+
+    Run:
+        ./bin/add-new-node   NEW_NODE_NAME
+
+
+
+
+
+###
+### Description of process that follows
+###
+#
+# This might be useful if something happens during the process and manual
+# intervention is needed.
+#
+
+Procedure:
+- command execution start;
+- at this moment, new node is commented-out in our inventory file;
+- data about new node is obtained from inventory file;
+
+- first we notify cluster of the upcoming node:
+---> this is done by running the script on all existing nodes;
+---> script exits if node is not cluster leader;
+---> only on leader the etcdctl command is executed, and leader then
+        notifies other cluster members about new node;
+
+- '#new ' prefix is removed from this entry in inventory file, making it a
+    valid cluster member;
+- a datadir purge is done on the new node, just in case;
+- new node gets final configuration and etcd is (re)started
+
+- a rolling reconfiguration+restart is done to update configuration files
+    on all existing nodes.
+
+All done.

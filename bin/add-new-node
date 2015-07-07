@@ -1,0 +1,91 @@
+#!/bin/bash
+
+
+
+### Bootstrap && shell configuration
+#
+set -e
+set -u
+MYDIR=`dirname $0`
+MYDIR_ABSPATH=`realpath "$MYDIR"`
+. $MYDIR_ABSPATH/_bin_bootstrap.sh
+
+
+
+### Check arguments
+#
+NEW_NODE_HOSTNAME="${1:-}"
+if [[ ! $NEW_NODE_HOSTNAME =~ ^[-.a-zA-Z0-9]+$ ]]; then
+    echo "ERROR: New node hostname argument missing or invalid"
+    exit 1
+fi
+
+
+
+### Check if new node is defined in inventory
+#
+RES=`cat $ETCDC_INVENTORY_FILE | grep -Ec "^[#]new $NEW_NODE_HOSTNAME" | cat`
+if [ "$RES" != "1" ]; then
+    echo "ERROR: Node with hostname '$NEW_NODE_HOSTNAME' not found in inventory (should be defined as commented-out entry)"
+    exit 1
+fi
+
+
+
+### Get new node's IP
+#
+NEW_NODE_NAME_FQDN=`cat $ETCDC_INVENTORY_FILE | grep -E "^[#]new $NEW_NODE_HOSTNAME" | grep -Eo 'etcd_node_name_fqdn=[^ ]+' | sed -e 's/etcd_node_name_fqdn=//'`
+if [ "$NEW_NODE_NAME_FQDN" == "" ]; then
+    echo "ERROR: Unable to get new FQDN node name (etcd_node_name_fqdn=) from inventory"
+    exit 1
+fi
+NEW_NODE_IP=`cat $ETCDC_INVENTORY_FILE | grep -E "^[#]new $NEW_NODE_HOSTNAME" | grep -Eo 'etcd_node_ip=[^ ]+' | sed -e 's/etcd_node_ip=//'`
+if [ "$NEW_NODE_IP" == "" ]; then
+    echo "ERROR: Unable to get new node's IP (etcd_node_ip=) from inventory"
+    exit 1
+fi
+
+
+
+### Run etcdctl-member-add playbook
+#
+echo "###"
+echo "### ETCD::ADD-NEW-NODE: Notifying cluster about new node..."
+echo "###"
+ansible-playbook playbooks/add-new-node.yml --extra-vars "new_node_hostname=$NEW_NODE_HOSTNAME new_node_name_fqdn=$NEW_NODE_NAME_FQDN new_node_ip=$NEW_NODE_IP"
+
+
+
+### Uncomment the entry in inventory file
+#
+echo "###"
+echo "### ETCD::ADD-NEW-NODE: Enabling new node in inventory file: $ETCDC_INVENTORY_FILE"
+echo "###"
+sed -i "s/^[#]new $NEW_NODE_HOSTNAME/$NEW_NODE_HOSTNAME/" $ETCDC_INVENTORY_FILE
+
+
+
+### Destroy existing etcd data on new node, stop etcd
+#
+echo "###"
+echo "### ETCD::ADD-NEW-NODE: Destroying (old) data on new node, stopping etcd..."
+echo "###"
+ansible-playbook playbooks/destroy.yml --limit $NEW_NODE_HOSTNAME
+
+
+
+### Reconfigure to new configuration
+#
+echo "###"
+echo "### ETCD::ADD-NEW-NODE: Uploading cluster configuration to new node and starting etcd..."
+echo "###"
+ansible-playbook playbooks/reconfigure.yml --limit $NEW_NODE_HOSTNAME
+
+
+
+### Reconfigure all hosts to include new configuration in initial-cluster
+#
+echo "###"
+echo "### ETCD::ADD-NEW-NODE: Doing whole cluster reconfiguration and rolling restart..."
+echo "###"
+ansible-playbook playbooks/reconfigure.yml

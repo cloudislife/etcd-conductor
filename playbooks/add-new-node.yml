@@ -1,0 +1,6 @@
+---
+-   name:        "etcd :: add-new-node"
+    hosts:       etcd_nodes
+
+    tasks:
+    -   include:   ./tasks/etcd-cluster-add-new-node.yml

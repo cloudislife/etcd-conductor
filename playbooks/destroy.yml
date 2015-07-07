@@ -1,0 +1,21 @@
+---
+
+
+
+###
+### Require confirmation first
+###
+#
+-   include:   request-confirmation.yml
+
+
+
+###
+### TASKS to execute
+###
+#
+-   name:        "etcd :: destroy"
+    hosts:       etcd_nodes
+    tasks:
+        - include:   ./tasks/etcd-daemon-stop.yml
+        - include:   ./tasks/etcd-data-destroy.yml

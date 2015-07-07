@@ -1,0 +1,82 @@
+#!/bin/bash
+
+
+
+### Bootstrap && shell configuration
+#
+set -e
+set -u
+MYDIR=`dirname $0`
+MYDIR_ABSPATH=`realpath "$MYDIR"`
+. $MYDIR_ABSPATH/_bin_bootstrap.sh
+
+
+
+### Check arguments
+#
+REMOVE_NODE_HOSTNAME="${1:-}"
+if [[ ! $REMOVE_NODE_HOSTNAME =~ ^[-.a-zA-Z0-9]+$ ]]; then
+    echo "ERROR: Node hostname argument missing or invalid"
+    exit 1
+fi
+
+
+
+### Check if new node is defined in inventory
+#
+RES=`cat $ETCDC_INVENTORY_FILE | grep -Ec "^$REMOVE_NODE_HOSTNAME" | cat`
+if [ "$RES" != "1" ]; then
+    echo "ERROR: Node with hostname '$REMOVE_NODE_HOSTNAME' not found in inventory"
+    exit 1
+fi
+
+
+
+### Get node's IP
+#
+REMOVE_NODE_NAME_FQDN=`cat $ETCDC_INVENTORY_FILE | grep -E "^$REMOVE_NODE_HOSTNAME" | grep -Eo 'etcd_node_name_fqdn=[^ ]+' | sed -e 's/etcd_node_name_fqdn=//'`
+if [ "$REMOVE_NODE_NAME_FQDN" == "" ]; then
+    echo "ERROR: Unable to get node's FQDN name (etcd_node_name_fqdn=) from inventory"
+    exit 1
+fi
+REMOVE_NODE_IP=`cat $ETCDC_INVENTORY_FILE | grep -E "^$REMOVE_NODE_HOSTNAME" | grep -Eo 'etcd_node_ip=[^ ]+' | sed -e 's/etcd_node_ip=//'`
+if [ "$REMOVE_NODE_IP" == "" ]; then
+    echo "ERROR: Unable to get node's IP (etcd_node_ip=) from inventory"
+    exit 1
+fi
+
+
+
+### Run etcdctl-member-remove playbook
+#
+echo "###"
+echo "### ETCD::REMOVE-NODE: Notifying cluster about departing node..."
+echo "###"
+ansible-playbook playbooks/remove-node.yml --extra-vars "remove_node_hostname=$REMOVE_NODE_HOSTNAME remove_node_name_fqdn=$REMOVE_NODE_NAME_FQDN remove_node_ip=$REMOVE_NODE_IP"
+
+
+
+### Stop etcd and destroy existing etcd data on node being removed
+#
+echo "###"
+echo "### ETCD::REMOVE-NODE: Stopping etcd, destroying data on node being removed..."
+echo "###"
+ansible-playbook playbooks/destroy.yml --limit $REMOVE_NODE_HOSTNAME
+
+
+
+### Comment out the entry in inventory file
+#
+echo "###"
+echo "### ETCD::REMOVE-NODE: Commenting-out this node in inventory file: $ETCDC_INVENTORY_FILE"
+echo "###"
+sed -i "s/^$REMOVE_NODE_HOSTNAME/#removed $REMOVE_NODE_HOSTNAME/" $ETCDC_INVENTORY_FILE
+
+
+
+### Reconfigure to new configuration
+#
+echo "###"
+echo "### ETCD::REMOVE-NODE: Reconfiguring remaining nodes and doing rolling restart..."
+echo "###"
+ansible-playbook playbooks/reconfigure.yml

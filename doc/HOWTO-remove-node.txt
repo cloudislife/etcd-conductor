@@ -1,0 +1,45 @@
+###
+### Steps to remove node from cluster membership
+###
+
+Step 1:
+
+    Run:
+        ./bin/remove-node   NODE_NAME
+
+
+
+Step 2:
+
+    All done!
+
+
+
+
+###
+### Description of process that follows
+###
+#
+# This might be useful if something happens during the process and manual
+# intervention is needed.
+#
+
+Procedure:
+- command execution start;
+- at this moment, new node is still present in inventory file
+- data about new node is obtained from inventory file;
+
+- first we notify cluster of the upcoming node removal:
+---> this is done by running the script on all existing nodes;
+---> script exits if node is not cluster leader;
+---> only on leader the etcdctl command is executed, and leader then
+        notifies other cluster members about departing node;
+
+- on departing node:
+---> stop etcd
+---> destroy data directory
+
+- a rolling reconfiguration+restart is done to update configuration files
+    on all existing nodes.
+
+All done.

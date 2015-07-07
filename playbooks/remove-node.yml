@@ -1,0 +1,6 @@
+---
+-   name:        "etcd :: remove-node"
+    hosts:       etcd_nodes
+
+    tasks:
+    -   include:   ./tasks/etcd-cluster-remove-node.yml

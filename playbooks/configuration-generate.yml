@@ -1,0 +1,6 @@
+---
+-   name:  "etcd :: configuration :: generate"
+    hosts: etcd_nodes
+
+    tasks:
+        -   include:   ./tasks/etcd-configuration-generate.yml

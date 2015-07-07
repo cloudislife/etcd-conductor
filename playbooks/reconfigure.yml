@@ -1,0 +1,7 @@
+---
+###
+### Update configuration and do a rolling restart
+###
+#
+-   include:   configuration-generate.yml
+-   include:   rolling-restart.yml

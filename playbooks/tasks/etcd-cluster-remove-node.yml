@@ -1,0 +1,11 @@
+---
+-   name:           "etcd :: cluster :: remove node :: script-copy"
+    copy:
+        src:        bin/etcd-cluster-remove-node.sh
+        dest:       /root/etcd-cluster-remove-node.sh
+        mode:       0755
+
+-   name:           "etcd :: cluster :: remove node :: script-execute"
+    command:        /root/etcd-cluster-remove-node.sh {{ inventory_hostname }} {{ remove_node_hostname }} {{ remove_node_name_fqdn }} {{ remove_node_ip }}
+    register:       etcd_cluster_remove_node_cmd
+    changed_when:   "etcd_cluster_remove_node_cmd.stdout.find('SKIPPING') != 0"
