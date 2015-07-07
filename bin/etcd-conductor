@@ -1,0 +1,51 @@
+#!/bin/bash
+
+
+
+### Bootstrap && shell configuration
+#
+set -e
+set -u
+MYDIR=`dirname $0`
+MYDIR_ABSPATH=`realpath "$MYDIR"`
+. $MYDIR_ABSPATH/_bin_bootstrap.sh
+
+
+
+### Get playbook to run
+#
+MYNAME_CALLED=`basename $0`
+MYNAME_THIS_SCRIPT=`readlink -e $0 | xargs basename`
+if [ "$MYNAME_CALLED" != "$MYNAME_THIS_SCRIPT" ]; then
+
+    # Script name is command
+    COMMAND="$MYNAME_CALLED"
+
+else
+
+    # First argument is command
+    COMMAND="$1"
+    shift
+    if [ "$COMMAND" == "" ]; then
+        _etcdc_fatalError "No command given"
+    fi
+    if [ "$COMMAND" == "help" ]; then
+        _etcdc_displayHelp
+        exit
+    fi
+fi
+
+
+
+### Get playbook to run
+#
+if [ ! -f $ETCDC_DIR_PLAYBOOKS/$COMMAND.yml ]; then
+    _etcdc_fatalError "Unsupported command: $COMMAND"
+    exit 1
+fi
+
+
+
+### Run ansible
+#
+ansible-playbook playbooks/$COMMAND.yml $@

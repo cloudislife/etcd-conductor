@@ -1,0 +1,6 @@
+---
+-   name:        "etcd :: show leader"
+    hosts:       etcd_nodes
+
+    tasks:
+    -   include:   ./tasks/etcd-cluster-show-leader.yml

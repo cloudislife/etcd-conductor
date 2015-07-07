@@ -1,0 +1,28 @@
+---
+-   name:        "etcd :: request confirmation"
+    hosts:       etcd_nodes
+
+
+
+    ###
+    ### Precaution - ask for confirmation
+    ###
+    vars_prompt:
+      - name:    "confirmation"
+        prompt:  "Are you bloody certain? (Answer with 'yes' to continue)"
+        default: "NO"
+        private: no
+
+
+
+    ###
+    ### TASKS to execute
+    ###
+    tasks:
+
+
+        ### Check if user confirmed the action
+        #
+        - assert:
+            that:
+            - "confirmation == 'yes'"

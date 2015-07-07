@@ -1,0 +1,10 @@
+###
+### Node-specific configuration
+###
+
+export ETCD_NAME="{{ etcd_node_name_fqdn }}"
+export ETCD_LISTEN_PEER_URLS="http://{{ etcd_node_ip }}:2380"
+export ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{ etcd_node_ip }}:2380"
+export ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://{{ etcd_node_ip }}:2379"
+export ETCD_ADVERTISE_CLIENT_URLS="http://{{ etcd_node_ip }}:2379"
+#export ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379"

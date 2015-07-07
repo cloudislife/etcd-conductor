@@ -1,0 +1,11 @@
+---
+-   name:      "etcd :: cluster :: show leader :: script-upload"
+    copy:
+        src:       bin/etcd-cluster-show-leader.sh
+        dest:      /root/etcd-cluster-show-leader.sh
+        mode:      0755
+
+-   name:           "etcd :: cluster :: show leader :: script-execute"
+    command:        /root/etcd-cluster-show-leader.sh {{ inventory_hostname }}
+    register:       etcd_cluster_show_leader_cmd
+    changed_when:   "etcd_cluster_show_leader_cmd.stdout.find('STATUS: I am a cluster leader.') == 0"

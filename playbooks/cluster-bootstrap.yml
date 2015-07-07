@@ -1,0 +1,68 @@
+---
+
+
+
+###
+### Require confirmation first
+###
+#
+-   include:   request-confirmation.yml
+
+
+
+###
+### TASKS to execute
+###
+#
+-   name:        "etcd :: bootstrap"
+    hosts:       etcd_nodes
+    tasks:
+
+
+
+        ### Stop daemons and destroy cluster data
+        #
+        - include:   ./tasks/etcd-daemon-stop.yml
+        - include:   ./tasks/etcd-data-destroy.yml
+
+
+
+        ### TASK: Generate configuration with "new" cluster state and start the cluster
+        #
+        -   include:   ./tasks/etcd-configuration-generate.yml
+            vars:
+                initial_cluster_state: "new"
+        -   include:   ./tasks/etcd-daemon-start.yml
+
+
+
+        ### TASK: Now regenerate configuration, change cluster state from "new" to "existing"
+        #
+        -   include:   ./tasks/etcd-configuration-generate.yml
+
+
+
+###
+### Do a rolling restart of cluster
+###
+#
+-   include:   rolling-restart.yml
+
+
+
+###
+### SLEEP a bit, wait for leader election to finish
+###
+#
+-   name:        "etcd :: sleep 10 seconds (waiting for leader election to complete)"
+    hosts:       etcd_nodes
+    tasks:
+        - include:   ./tasks/sleep-10.yml
+
+
+
+###
+### Now check health
+###
+#
+-   include:   check-health.yml

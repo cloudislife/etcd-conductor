@@ -1,0 +1,8 @@
+---
+-   name:        "etcd :: check :: health"
+    hosts:       etcd_nodes
+    vars:
+        etcd_nodes_count: "{{ groups['etcd_nodes'] | length }}"
+
+    tasks:
+    -   include:   ./tasks/etcd-cluster-check-health.yml nodes_count={{ etcd_nodes_count }}

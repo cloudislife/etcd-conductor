@@ -1,0 +1,3 @@
+---
+- name:      "etcd :: daemon :: start"
+  command:   /etc/rc.d/rc.etcd start

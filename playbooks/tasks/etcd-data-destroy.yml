@@ -1,0 +1,3 @@
+---
+-   name: "etcd :: data :: destroy"
+    file: path=/var/lib/etcd/data/member state=absent

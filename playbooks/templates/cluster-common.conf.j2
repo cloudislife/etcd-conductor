@@ -1,0 +1,10 @@
+###
+### Cluster 5: cl5.ha.teon.si
+###
+
+export ETCD_INITIAL_CLUSTER_STATE="{% if initial_cluster_state is defined %}{{ initial_cluster_state }}{% else %}existing{% endif %}"
+export ETCD_INITIAL_CLUSTER_TOKEN="{% if initial_cluster_token is defined %}{{ initial_cluster_token }}{% else %}initial-cluster-token-fixme{% endif %}"
+export ETCD_INITIAL_CLUSTER="{% for host in groups['etcd_nodes'] %}{{ hostvars[host].etcd_node_name_fqdn -}}=http://{{ hostvars[host].etcd_node_ip -}}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+
+#export ETCD_INITIAL_ADVERTISE_PEER_URLS="{% for host in groups['etcd_nodes'] %}http://{{ hostvars[host].etcd_node_ip -}}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+#export ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379"

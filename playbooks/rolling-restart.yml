@@ -1,0 +1,17 @@
+---
+
+
+
+###
+### Include a rolling restart task
+###
+#
+-   name:        "etcd :: rolling-restart"
+    hosts:       etcd_nodes
+    serial:      1
+
+    handlers:
+    -   include:   ./handlers/main.yml
+
+    tasks:
+    -   include:   ./tasks/etcd-cluster-rolling-restart.yml

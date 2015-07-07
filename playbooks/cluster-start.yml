@@ -1,0 +1,25 @@
+---
+
+
+
+###
+### Require confirmation first
+###
+#
+# Not needed.
+
+
+
+###
+### TASKS to execute
+###
+#
+-   name:        "etcd :: cluster :: start"
+    hosts:       etcd_nodes
+    tasks:
+
+
+
+        ### Start daemons
+        #
+        - include:   ./tasks/etcd-daemon-start.yml

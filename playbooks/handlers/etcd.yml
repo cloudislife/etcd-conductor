@@ -1,0 +1,13 @@
+---
+###
+### Handlers of etcd service
+###
+
+-   name: etcd start
+    command: /etc/rc.d/rc.etcd start
+
+-   name: etcd restart
+    command: /etc/rc.d/rc.etcd restart
+
+-   name: etcd stop
+    command: /etc/rc.d/rc.etcd stop

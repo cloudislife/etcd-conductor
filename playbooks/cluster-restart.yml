@@ -1,0 +1,27 @@
+---
+
+
+
+###
+### Require confirmation first
+###
+#
+-   include:   request-confirmation.yml
+    vars:
+        message: "All at once???"
+
+
+
+###
+### TASKS to execute
+###
+#
+-   name:        "etcd :: restart"
+    hosts:       etcd_nodes
+    tasks:
+
+
+
+        ### Stop daemons and destroy cluster data
+        #
+        - include:   ./tasks/etcd-daemon-restart.yml

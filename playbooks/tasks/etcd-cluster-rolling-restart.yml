@@ -1,0 +1,4 @@
+---
+-   name:           "etcd :: cluster :: rolling restart :: sleeping 10 seconds"
+    command:        sleep 10
+    notify:         etcd restart

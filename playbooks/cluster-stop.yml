@@ -1,0 +1,25 @@
+---
+
+
+
+###
+### Require confirmation first
+###
+#
+-   include:   request-confirmation.yml
+
+
+
+###
+### TASKS to execute
+###
+#
+-   name:        "etcd :: cluster :: stop"
+    hosts:       etcd_nodes
+    tasks:
+
+
+
+        ### Stop daemons on all nodes instantly
+        #
+        - include:   ./tasks/etcd-daemon-stop.yml

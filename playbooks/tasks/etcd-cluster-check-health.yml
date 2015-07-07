@@ -1,0 +1,11 @@
+---
+-   name:      "etcd :: cluster :: install check script"
+    copy:
+        src:       bin/etcd-cluster-check-health.sh
+        dest:      /root/etcd-cluster-check-health.sh
+        mode:      0755
+
+-   name:           "etcd :: cluster :: check :: health"
+    command:        /root/etcd-cluster-check-health.sh {{ nodes_count }}
+    register:       etcd_cluster_check_health_cmd
+    changed_when:   "etcd_cluster_check_health_cmd.rc != 0"

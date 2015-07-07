@@ -1,0 +1,12 @@
+---
+-   name:     "etcd :: configuration :: generate :: cluster-common {% if initial_cluster_state is defined %}(state={{ initial_cluster_state }}){% endif%}"
+    template:
+        src:              cluster-common.conf.j2
+        dest:   /etc/etcd/cluster-common.conf
+
+
+
+-   name:     "etcd :: configuration :: generate :: node-specific"
+    template:
+        src:              node-specific.conf.j2
+        dest:   /etc/etcd/node-specific.conf
