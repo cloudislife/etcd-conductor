@@ -1,0 +1,28 @@
+###
+### Steps to bootstrap new cluster
+###
+
+
+Step 1:
+
+    Install etcd 2.0.13+ on all nodes that you intend to run cluster on.
+
+
+
+Step 2:
+
+    Add all nodes to inventory. See file ../hosts-sample for sample inventory
+    configuration.
+
+
+
+Step 3:
+
+    Run:
+        ./bin/cluster-bootstrap
+
+
+
+###
+### All done.
+###

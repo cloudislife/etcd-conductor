@@ -1,0 +1,12 @@
+[etcd_nodes]
+
+node-1.etcd.example.net   etcd_node_ip=1.1.1.1   etcd_node_name_fqdn=node-1.etcd.example.net   etcd_node_name_short=node-1
+node-2.etcd.example.net   etcd_node_ip=2.2.2.2   etcd_node_name_fqdn=node-2.etcd.example.net   etcd_node_name_short=node-2
+node-3.etcd.example.net   etcd_node_ip=3.3.3.3   etcd_node_name_fqdn=node-3.etcd.example.net   etcd_node_name_short=node-3
+
+
+
+### Common variables
+#
+[all:vars]
+#initial_cluster_token="something"
