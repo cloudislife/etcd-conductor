@@ -51,6 +51,16 @@ cd $ETCDC_ABSPATH
 
 
 
+### Initialisation: terminate initialisation if requested
+#
+# This is mainly used by ../bootstrap-parent-git.sh script
+#
+if [ "$ETCDC_BOOTSTRAP_BASIC" == "true" ]; then
+    return 0
+fi
+
+
+
 ### Initialisation: check if ansible is available
 #
 ETCDC_INIT_ANSIBLE_SUBMODULE_ENVIRONMENT="no"

@@ -1,8 +1,21 @@
-[etcd_nodes]
+###
+### ETCD-CONDUCTOR: Sample inventory
+###
 
-node-1.etcd.example.net   etcd_node_ip=1.1.1.1   etcd_node_name_fqdn=node-1.etcd.example.net   etcd_node_name_short=node-1
-node-2.etcd.example.net   etcd_node_ip=2.2.2.2   etcd_node_name_fqdn=node-2.etcd.example.net   etcd_node_name_short=node-2
-node-3.etcd.example.net   etcd_node_ip=3.3.3.3   etcd_node_name_fqdn=node-3.etcd.example.net   etcd_node_name_short=node-3
+
+
+### List of active nodes participating in the cluster
+#
+# This list is used for bootstrapping new cluster and for it's general management
+# afterwards. Procedure for adding and removing nodes from cluster is a bit
+# different. It is described in etcd-conductor/doc/HOWTO* documents.
+#
+# This list must be populated before bootstrapping new cluster!
+#
+[etcd_nodes]
+#node-1.etcd.example.net   etcd_node_ip=1.1.1.1   etcd_node_name_fqdn=node-1.etcd.example.net   etcd_node_name_short=node-1
+#node-2.etcd.example.net   etcd_node_ip=2.2.2.2   etcd_node_name_fqdn=node-2.etcd.example.net   etcd_node_name_short=node-2
+#node-3.etcd.example.net   etcd_node_ip=3.3.3.3   etcd_node_name_fqdn=node-3.etcd.example.net   etcd_node_name_short=node-3
 
 
 
