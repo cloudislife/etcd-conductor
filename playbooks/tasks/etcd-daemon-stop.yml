@@ -1,3 +1,16 @@
 ---
--   name:      "etcd :: daemon :: stop"
-    command:   /etc/rc.d/rc.etcd stop
+- name:      "etcd :: daemon :: stop (CentOS)"
+  command:   service etcd stop
+  when:      ansible_distribution == 'CentOS'
+
+- name:      "etcd :: daemon :: stop (Debian)"
+  command:   service etcd stop
+  when:      ansible_distribution == 'Debian'
+
+- name:      "etcd :: daemon :: stop (Slackware)"
+  command:   /etc/rc.d/rc.etcd stop
+  when:      ansible_distribution == 'Slackware'
+
+- name:      "etcd :: daemon :: stop (Ubuntu)"
+  command:   service etcd stop
+  when:      ansible_distribution == 'Ubuntu'

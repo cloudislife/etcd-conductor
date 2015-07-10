@@ -1,3 +1,16 @@
 ---
-- name:      "etcd :: daemon :: start"
+- name:      "etcd :: daemon :: start (CentOS)"
+  command:   service etcd start
+  when:      ansible_distribution == 'CentOS'
+
+- name:      "etcd :: daemon :: start (Debian)"
+  command:   service etcd start
+  when:      ansible_distribution == 'Debian'
+
+- name:      "etcd :: daemon :: start (Slackware/a2o)"
   command:   /etc/rc.d/rc.etcd start
+  when:      ansible_distribution == 'Slackware'
+
+- name:      "etcd :: daemon :: start (Ubuntu)"
+  command:   service etcd start
+  when:      ansible_distribution == 'Ubuntu'

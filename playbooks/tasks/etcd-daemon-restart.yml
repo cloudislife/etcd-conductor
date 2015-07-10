@@ -1,3 +1,16 @@
 ---
-- name:      "etcd :: daemon :: restart"
+- name:      "etcd :: daemon :: restart (CentOS)"
+  command:   service etcd restart
+  when:      ansible_distribution == 'CentOS'
+
+- name:      "etcd :: daemon :: restart (Debian)"
+  command:   service etcd restart
+  when:      ansible_distribution == 'Debian'
+
+- name:      "etcd :: daemon :: restart (Slackware/a2o)"
   command:   /etc/rc.d/rc.etcd restart
+  when:      ansible_distribution == 'Slackware'
+
+- name:      "etcd :: daemon :: restart (Ubuntu)"
+  command:   service etcd restart
+  when:      ansible_distribution == 'Ubuntu'

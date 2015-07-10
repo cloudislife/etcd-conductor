@@ -4,10 +4,10 @@
 ###
 
 -   name: etcd start
-    command: /etc/rc.d/rc.etcd start
+    command: service etcd start
 
 -   name: etcd restart
-    command: /etc/rc.d/rc.etcd restart
+    command: service etcd restart
 
 -   name: etcd stop
-    command: /etc/rc.d/rc.etcd stop
+    command: service etcd stop
