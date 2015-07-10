@@ -13,7 +13,7 @@ set -u
 #
 _etcdc_displayHelp()
 {
-    echo "Available commands:"
+    echo "ETCDC Available commands:"
     for CMD in `cd $ETCDC_DIR_PLAYBOOKS && ls *.yml | sed -e 's/\.yml$//'`; do
         echo "    - $CMD"
     done
@@ -28,9 +28,7 @@ _etcdc_fatalError()
 {
     MSG="$1"
     echo
-    _etcdc_displayHelp
-    echo
-    echo "ERROR: $MSG"
+    echo "ETCDC ERROR: $MSG"
     echo
     exit 1
 }
@@ -55,8 +53,35 @@ cd $ETCDC_ABSPATH
 
 ### Initialisation: check if ansible is available
 #
-if ! which ansible > /dev/null; then
-    _etcdc_fatalError "Unable to locate ansible binary"
+ETCDC_INIT_ANSIBLE_SUBMODULE_ENVIRONMENT="no"
+if ! which ansible-playbook > /dev/null; then
+    if [ -d ansible/hacking ]; then
+        ETCDC_INIT_ANSIBLE_SUBMODULE_ENVIRONMENT="yes"
+    else
+        echo    "ETCDC WARNING:  No 'ansible-playbook' program available."
+        echo -n "ETCDC QUESTION: Would you like me to set it up for you? (enter 'yes' to continue): "
+        read ANSWER
+        if [ "$ANSWER" != "yes" ]; then
+            _etcdc_fatalError "Unable to locate ansible binary"
+        fi
+
+        # Update submodule
+        git submodule init
+        git submodule update --init --recursive
+
+        # Set up ansible environment
+        ETCDC_INIT_ANSIBLE_SUBMODULE_ENVIRONMENT="yes"
+    fi
+fi
+
+
+
+### Initialisation: set up ansible environment if requested
+#
+if [ "$ETCDC_INIT_ANSIBLE_SUBMODULE_ENVIRONMENT" == "yes" ]; then
+    echo -n "ETCDC: Initialising ansible environment... "
+    . ./ansible/hacking/env-setup > /dev/null 2>/dev/null
+    echo "done."
 fi
 
 
