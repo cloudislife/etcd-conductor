@@ -55,7 +55,7 @@ cd $ETCDC_ABSPATH
 #
 # This is mainly used by ../bootstrap-parent-git.sh script
 #
-if [ "$ETCDC_BOOTSTRAP_BASIC" == "true" ]; then
+if [ "${ETCDC_BOOTSTRAP_BASIC-}" == "true" ]; then
     return 0
 fi
 
