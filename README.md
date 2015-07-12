@@ -7,6 +7,7 @@ Ansible-based etcd manager/deployment and management tool.
     * [What is etcd-conductor?](#what-is-etcd-conductor)
     * [What it is not?](#what-it-is-not)
     * [Quickstart: 1 minute to operational etcd cluster](#quickstart-1-minute-to-operational-etcd-cluster)
+    * [Supported Linux distributions](#supported-linux-distributions)
     * [Contributing](#contributing)
     * [License](#license)
     * [Credits](#credits)
@@ -61,6 +62,19 @@ edit ./hosts
 # Finish: bootstrap your cluster.
 ./bin/cluster-bootstrap
 ```
+
+
+
+## Supported Linux distributions
+
+etcd-conductor is created as distribution-agnostic as possible. Currently the
+following distributions are supported: Ubuntu, Slackware, RedHat/CentOS.
+If you need support for some other Linux distribution, please create it and
+submit a pull request.
+
+Parts that need polishing:
+- install procedure (currently supports Ubuntu only)
+- active cluster management (restart commands might be missing)
 
 
 
