@@ -1,6 +1,7 @@
 # etcd-conductor
 
-Ansible-based etcd manager/deployment and management tool.
+Ansible-based etcd manager. Offers convenient and no-hassle install,
+bootstrap, management and health check operations.
 
 
   * [etcd-conductor](#etcd-conductor)
@@ -18,9 +19,9 @@ Ansible-based etcd manager/deployment and management tool.
 
 etcd-conductor is Ansible-based etcd cluster manager and deployment tool.
 It can install etcd on your designated hosts, bootstrap your new cluster,
-start it, stop it, restart it, rolling-restart it, reconfigure it, add
-and remove nodes to/from it, and so forth. And all this at a convenience
-of single command for operation.
+start, stop and restart it, rolling-restart it, reconfigure it, check
+its health and get its leader, add and remove nodes to/from it, and so
+forth.
 
 
 
