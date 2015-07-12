@@ -54,10 +54,10 @@
 ### SLEEP a bit, wait for leader election to finish
 ###
 #
--   name:        "etcd :: sleep 10 seconds (waiting for leader election to complete)"
+-   name:        "etcd :: sleep 20 seconds (waiting for leader election to complete)"
     hosts:       etcd_nodes
     tasks:
-        - include:   ./tasks/sleep-10.yml
+        - include:   ./tasks/sleep-20.yml
 
 
 
