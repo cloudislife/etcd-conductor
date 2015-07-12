@@ -6,7 +6,7 @@ Ansible-based etcd manager/deployment and management tool.
   * [etcd-conductor](#etcd-conductor)
     * [What is etcd-conductor?](#what-is-etcd-conductor)
     * [What it is not?](#what-it-is-not)
-    * [Quickstart: 1 minute to operational cluster](#quickstart-1-minute-to-operational-cluster)
+    * [Quickstart: 1 minute to operational etcd cluster](#quickstart-1-minute-to-operational-etcd-cluster)
     * [Contributing](#contributing)
     * [License](#license)
     * [Credits](#credits)
@@ -31,7 +31,7 @@ expect that eagerly.
 
 
 
-## Quickstart: 1 minute to operational cluster
+## Quickstart: 1 minute to operational etcd cluster
 
 ```bash
 # Create a new git repository.
@@ -40,7 +40,7 @@ cd       my-etcd-cluster
 
 
 # Add etcd-conductor as git submodule to it.
-# WARNING: It is important that you do not change the submodule path
+# WARNING: It is important that you do not change the submodule path!
 git submodule add https://github.com/a2o/etcd-conductor.git etcd-conductor
 
 
@@ -54,6 +54,7 @@ edit ./hosts
 
 # If you do not have etcd already installed on your nodes,
 # etcd-conductor can do it for you.
+# Destination: /usr/local/etcd*
 ./bin/install
 
 
