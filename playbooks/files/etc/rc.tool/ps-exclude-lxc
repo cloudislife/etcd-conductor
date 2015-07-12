@@ -1,0 +1,25 @@
+#!/bin/bash
+
+
+
+### Detect platform we are running on (LXC is of particular interest)
+#
+export DETECT_PLATFORM_QUIET="yes"
+. /etc/rc.tool/libexec/detect-platform.inc.sh
+
+
+
+### Mounting /proc, /sys, /run and /dev/shm
+#
+if [ "$HOST_VIRT_PLATFORM" == "lxc" ]; then
+    # Inside container - nested containters are not supported ATM
+    ps "$@"
+else
+    if [[ -x /usr/bin/lxc-ps ]] && [[ -x /usr/bin/perl ]]; then
+        # This is LXC-enabled host
+        /usr/bin/lxc-ps -- "$@" | grep '^-' | awk '{$1=""; print $0}' | sed -e 's/^ *//'
+    else
+        # No LXC here
+        ps "$@"
+    fi
+fi

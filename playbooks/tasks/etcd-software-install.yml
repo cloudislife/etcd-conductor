@@ -1,0 +1,73 @@
+---
+-   name:       "etcd :: install :: group :: create"
+    group:      name=etcd
+-   name:       "etcd :: install :: user :: create"
+    user:       name=etcd shell=/bin/bash group=etcd
+
+-   name:       "etcd :: install :: software"
+    script:     etcd-software-install.sh
+
+
+
+### Create dirs
+#
+-   name:       "etcd :: install :: startup file :: /etc/rc.tool"
+    file:       state=directory mode=0755      path=/etc/rc.tool
+-   name:       "etcd :: install :: startup file :: /etc/rc.tool/libexec"
+    file:       state=directory mode=0755      path=/etc/rc.tool/libexec
+-   name:       "etcd :: install :: startup file :: /etc/rc.d"
+    file:       state=directory mode=0755      path=/etc/rc.d
+
+-   name:       "etcd :: install :: config dir :: /etc/etcd"
+    file:       state=directory mode=0755    path=/etc/etcd
+
+-   name:       "etcd :: install :: config dir :: /var/lib/etcd"
+    file:       state=directory mode=0755    path=/var/lib/etcd        owner=etcd group=etcd
+-   name:       "etcd :: install :: config dir :: /var/lib/etcd/data"
+    file:       state=directory mode=0755    path=/var/lib/etcd/data   owner=etcd group=etcd
+-   name:       "etcd :: install :: config dir :: /var/lib/etcd/log"
+    file:       state=directory mode=0755    path=/var/lib/etcd/log    owner=etcd group=etcd
+-   name:       "etcd :: install :: config dir :: /var/lib/etcd/run"
+    file:       state=directory mode=0755    path=/var/lib/etcd/run    owner=etcd group=etcd
+
+
+
+### Copy startup framework files
+#
+-   name:       "etcd :: install :: startup framework :: /etc/rc.tool/common"
+    copy:       mode=0755 src=etc/rc.tool/common   dest=/etc/rc.tool/common
+
+-   name:       "etcd :: install :: startup framework :: /etc/rc.tool/ps-exclude-lxc"
+    copy:       mode=0755 src=etc/rc.tool/ps-exclude-lxc   dest=/etc/rc.tool/ps-exclude-lxc
+
+-   name:       "etcd :: install :: startup framework :: /etc/rc.tool/libexec/detect-platform.inc.sh"
+    copy:       mode=0755 src=etc/rc.tool/libexec/detect-platform.inc.sh   dest=/etc/rc.tool/libexec/detect-platform.inc.sh
+
+-   name:       "etcd :: install :: startup framework :: /etc/rc.tool/wrapper.debian"
+    copy:       mode=0755 src=etc/rc.tool/wrapper.debian   dest=/etc/rc.tool/wrapper.debian
+-   name:       "etcd :: install :: startup framework :: /etc/rc.tool/wrapper.redhat"
+    copy:       mode=0755 src=etc/rc.tool/wrapper.redhat   dest=/etc/rc.tool/wrapper.redhat
+-   name:       "etcd :: install :: startup framework :: /etc/rc.tool/wrapper.ubuntu"
+    copy:       mode=0755 src=etc/rc.tool/wrapper.ubuntu   dest=/etc/rc.tool/wrapper.ubuntu
+
+
+
+### Copy main startup file
+#
+-   name:       "etcd :: install :: startup file :: /etc/rc.d/rc.etcd"
+    copy:       mode=0755 src=etc/rc.d/rc.etcd   dest=/etc/rc.d/rc.etcd
+
+
+
+### Copy distribution-dependant startup file wrapper
+#
+-   name:       "etcd :: install :: startup file :: /etc/init.d/etcd (Ubuntu)"
+    copy:       mode=0755 src=etc/init.d/etcd.Ubuntu   dest=/etc/init.d/etcd
+    when:       ansible_distribution == 'Ubuntu'
+
+
+
+### Enable service at boot
+#
+-   name:       "etcd :: install :: service :: enable at boot (Ubuntu)"
+    command:    update-rc.d etcd defaults

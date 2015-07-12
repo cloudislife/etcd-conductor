@@ -2,6 +2,10 @@
 ### Cluster 5: cl5.ha.teon.si
 ###
 
+export ETCD_DATA_DIR="/var/lib/etcd/data"
+export ETCD_HEARTBEAT_INTERVAL="1000"
+export ETCD_ELECTION_TIMEOUT="5000"
+
 export ETCD_INITIAL_CLUSTER_STATE="{% if initial_cluster_state is defined %}{{ initial_cluster_state }}{% else %}existing{% endif %}"
 export ETCD_INITIAL_CLUSTER_TOKEN="{% if initial_cluster_token is defined %}{{ initial_cluster_token }}{% else %}initial-cluster-token-fixme{% endif %}"
 export ETCD_INITIAL_CLUSTER="{% for host in groups['etcd_nodes'] %}{{ hostvars[host].etcd_node_name_fqdn -}}=http://{{ hostvars[host].etcd_node_ip -}}:2380{% if not loop.last %},{% endif %}{% endfor %}"

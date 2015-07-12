@@ -1,0 +1,16 @@
+---
+
+
+
+### Require confirmation first
+#
+-   include:   request-confirmation.yml
+
+
+
+### Now install it
+#
+-   name:        "etcd :: install"
+    hosts:       etcd_nodes
+    tasks:
+        - include:   ./tasks/etcd-software-install.yml

@@ -1,0 +1,145 @@
+#!/bin/bash
+###########################################################################
+# a2o Essential Puppet Modules                                            #
+#-------------------------------------------------------------------------#
+# Copyright (c) Bostjan Skufca                                            #
+#-------------------------------------------------------------------------#
+# This source file is subject to version 2.0 of the Apache License,       #
+# that is bundled with this package in the file LICENSE, and is           #
+# available through the world-wide-web at the following url:              #
+# http://www.apache.org/licenses/LICENSE-2.0                              #
+#-------------------------------------------------------------------------#
+# Authors: Bostjan Skufca <my_name [at] a2o {dot} si>                     #
+###########################################################################
+. /etc/rc.tool/common
+
+
+
+# Daemon config
+PROC_NAME="/usr/local/etcd/sbin/etcd"
+PID_FILE="/var/lib/etcd/run/etcd.pid"
+LOG_FILE="/var/lib/etcd/log/etcd.log"
+
+
+
+# Site-specific and local etcd configuration
+for FILENAME in `ls /etc/etcd`; do
+    . /etc/etcd/$FILENAME
+done
+
+
+
+# Select appropriate command for startup
+SU_USER="etcd"
+WHOAMI=`whoami`
+APP_CMD_START="nohup $PROC_NAME >> $LOG_FILE 2>&1 &"
+if [ "$WHOAMI" != "$SU_USER" ]; then
+    APP_CMD_START="su $SU_USER -c \"$APP_CMD_START\""
+fi
+
+PID_FILE_GENERATE="1"
+PID_FILE_REMOVE="1"
+PID_FILE_GENERATE_DELAY="0.5"
+
+
+
+etcd_start() {
+    if app_start; then
+        ln -sf $PID_FILE /var/run/etcd.pid
+    fi
+}
+
+etcd_stop() {
+    if app_stop; then
+        rm -f /var/run/etcd.pid
+    fi
+}
+
+etcd_restart() {
+    etcd_stop
+    etcd_start
+}
+
+etcd_status() {
+    is_app_running__info
+}
+
+etcd_kill() {
+    if app_kill; then
+        rm -f $PID_FILE
+        rm -f /var/run/etcd.pid
+    fi
+}
+
+
+
+### Subroutine - diplay results retrieved from local api call
+#
+_etcd_get_local_api_result()
+{
+    REQUEST_URI="$1"
+    local  __resultVar="$2"
+    PROTO="http"
+    HOST_PORT=`cat $CONF_FILE | grep '^addr' | head -n1 | cut -d'"' -f2`
+    REQUEST_URI="$1"
+    URI="${PROTO}://${HOST_PORT}${REQUEST_URI}"
+
+    resultValue=`curl -s $URI -o-`
+    eval $__resultVar="'$resultValue'"
+}
+
+
+
+etcd_get_leader()
+{
+    if is_app_running $PROC_NAME $PID_FILE; then
+        _etcd_get_local_api_result /v2/leader LEADER
+        echo "Current cluster leader:" >&2
+        echo -n "    " >&2
+        echo $LEADER
+    else
+        is_app_running__info
+    fi
+}
+
+etcd_get_node_list()
+{
+    if is_app_running $PROC_NAME $PID_FILE; then
+        _etcd_get_local_api_result /v2/machines NODES
+        echo "Current cluster nodes:" >&2
+        for NODE in `echo $NODES | sed -e 's#, #\n#g' | sort`; do
+            echo -n "    " >&2
+            echo $NODE
+        done
+    else
+        is_app_running__info
+    fi
+}
+
+
+
+case "$1" in
+    'start')
+        etcd_start
+        ;;
+    'stop')
+        etcd_stop
+        ;;
+    'restart')
+        etcd_restart
+        ;;
+    'status')
+        etcd_status
+        ;;
+    'kill')
+        etcd_kill
+        ;;
+    'get-node-list')
+        etcd_get_node_list
+        ;;
+    'get-leader')
+        etcd_get_leader
+        ;;
+    *)
+        echo "usage $0 start|stop|restart|status|kill|get-node-list|get-leader"
+esac
