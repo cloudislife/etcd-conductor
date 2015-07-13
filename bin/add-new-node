@@ -26,7 +26,7 @@ fi
 #
 RES=`cat $ETCDC_INVENTORY_FILE | grep -Ec "^[#]new $NEW_NODE_HOSTNAME" | cat`
 if [ "$RES" != "1" ]; then
-    echo "ERROR: Node with hostname '$NEW_NODE_HOSTNAME' not found in inventory (should be defined as commented-out entry)"
+    echo "ERROR: Node with hostname '$NEW_NODE_HOSTNAME' not found in inventory (should be fully defined and commented out with '#new ' prefix)"
     exit 1
 fi
 
@@ -36,12 +36,12 @@ fi
 #
 NEW_NODE_NAME_FQDN=`cat $ETCDC_INVENTORY_FILE | grep -E "^[#]new $NEW_NODE_HOSTNAME" | grep -Eo 'etcd_node_name_fqdn=[^ ]+' | sed -e 's/etcd_node_name_fqdn=//'`
 if [ "$NEW_NODE_NAME_FQDN" == "" ]; then
-    echo "ERROR: Unable to get new FQDN node name (etcd_node_name_fqdn=) from inventory"
+    echo "ERROR: Unable to find new node name (etcd_node_name_fqdn=) in inventory (node definition should be commented out with '#new ' prefix)"
     exit 1
 fi
 NEW_NODE_IP=`cat $ETCDC_INVENTORY_FILE | grep -E "^[#]new $NEW_NODE_HOSTNAME" | grep -Eo 'etcd_node_ip=[^ ]+' | sed -e 's/etcd_node_ip=//'`
 if [ "$NEW_NODE_IP" == "" ]; then
-    echo "ERROR: Unable to get new node's IP (etcd_node_ip=) from inventory"
+    echo "ERROR: Unable to get new node's IP (etcd_node_ip=) from inventory (node definition should be commented out with '#new ' prefix)"
     exit 1
 fi
 

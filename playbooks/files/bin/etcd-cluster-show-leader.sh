@@ -15,6 +15,12 @@ MY_NODE_NAME="$1"
 
 
 
+### Check if required programs exist
+#
+CURL_PATH=`which curl`
+
+
+
 ### Check if I am leader, exit if not
 #
 RES=`curl -sL http://127.0.0.1:2379/v2/members/leader | fgrep "$MY_NODE_NAME" -c | cat`
